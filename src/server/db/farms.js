@@ -14,29 +14,29 @@ function milesToMeters (miles) {
 }
 
 /**
- * Save to the database and return the location id.
- * @param  {Object}   location
+ * Save to the database and return the farm id.
+ * @param  {Object}   farm
  * @param  {Function} cb
  * @return {Number}
  */
-const save = (location, cb) => {
+const save = (farm, cb) => {
   const values = [
-    location.user_id,
-    location.name,
-    location.email,
-    location.description,
-    location.street,
-    location.city,
-    location.state,
-    location.zipcode,
-    location.is_public,
-    location.available,
-    location.price,
-    location.drive_up,
-    location.free_range,
-    location.organic,
-    location.latitude,
-    location.longitude
+    farm.user_id,
+    farm.name,
+    farm.email,
+    farm.description,
+    farm.street,
+    farm.city,
+    farm.state,
+    farm.zipcode,
+    farm.is_public,
+    farm.available,
+    farm.price,
+    farm.drive_up,
+    farm.free_range,
+    farm.organic,
+    farm.latitude,
+    farm.longitude
   ]
   db.upsertLocation(values, function (err, results) {
     if (err) return cb(err)
@@ -45,33 +45,33 @@ const save = (location, cb) => {
 }
 
 /**
- * Remove a location from the database
+ * Remove a farm from the database
  * @param  {[type]}   id [description]
  * @param  {Function} cb [description]
  * @return {[type]}      [description]
  */
 function remove (user_id, cb) {
-  db.locations.destroy({ user_id }, function (err, results) {
+  db.farms.destroy({ user_id }, function (err, results) {
     if (err) return cb(err)
     return cb(null, results)
   })
 }
 
 /**
- * Find a single location with `id`
+ * Find a single farm with `id`
  * @param  {Number|String}   id
  * @param  {Function} cb
  * @return {Object}
  */
 const find = (user_id, cb) => {
-  db.locations.find({ user_id }, function (err, results) {
+  db.farms.find({ user_id }, function (err, results) {
     if (err) return cb(err)
     return cb(null, results[0] ? results[0] : null)
   })
 }
 
 const findFarm = (farm_id, cb) => {
-  db.locations.find({ farm_id }, function (err, results) {
+  db.farms.find({ farm_id }, function (err, results) {
     if (err) return cb(err)
     return cb(null, results[0] ? results[0] : null)
   })
@@ -87,7 +87,7 @@ const findWithinRadius = (latitude, longitude, radius, cb) => {
 }
 
 const findRecent = (cb) => {
-  db.locations.find({}, { limit: 20, order: 'created_at' }, (err, collection) => {
+  db.farms.find({}, { limit: 20, order: 'created_at' }, (err, collection) => {
     if (err) return cb(err)
     return cb(null, collection)
   })

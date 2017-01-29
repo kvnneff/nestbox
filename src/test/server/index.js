@@ -1,15 +1,13 @@
 require('dotenv').config({ silent: true })
 const server = require('../../server')
-const LocationsDB = require('./unit/db-locations')
-const LocationsModel = require('./unit/model-locations')
-const RouteGeocoder = require('./integration/route-geocoder')
-const RouteLocation = require('./integration/route-location')
+const FarmsDB = require('./unit/db-farm')
+const FarmModel = require('./unit/model-farm')
 
 let count = 0
 
 const done = () => {
   count++
-  if (count === 3) return closeServer()
+  if (count === 2) return closeServer()
 }
 
 const closeServer = () => {
@@ -20,8 +18,6 @@ const closeServer = () => {
 }
 
 server.emitter.on('ready', () => {
-  LocationsDB(server, done)
-  LocationsModel(server, done)
-  RouteGeocoder(server, done)
-  RouteLocation(server, done)
+  FarmsDB(server, done)
+  FarmModel(server, done)
 })

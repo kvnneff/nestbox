@@ -1,6 +1,6 @@
 const passport = require('passport')
 const Auth0Strategy = require('passport-auth0')
-const LocationModel = require('../models/location')()
+const FarmModel = require('../models/farm')()
 
 const strategy = new Auth0Strategy({
   domain: process.env.AUTH0_DOMAIN,
@@ -18,7 +18,7 @@ passport.use(strategy)
 
 // This is not a best practice, but we want to keep things simple for now
 passport.serializeUser((user, done) => {
-  LocationModel.find(user.id, (err, location) => {
+  FarmModel.find(user.id, (err, location) => {
     if (err) return done(err)
     return done(null, location)
   })

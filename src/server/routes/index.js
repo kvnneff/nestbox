@@ -1,5 +1,5 @@
 const express = require('express')
-const LocationController = require('../controllers/location')
+const FarmController = require('../controllers/farm')
 const geo = require('../utils/geocoder')
 
 const routes = (middleware) => {
@@ -33,20 +33,20 @@ const routes = (middleware) => {
     return next()
   }
 
-  router.get('/register', LocationController.showRegister)
-  router.get('/search', geo.geoMiddleware, LocationController.search)
-  router.get('/farm/:farm_id', LocationController.getFarm)
-  router.get('/profile/:farm_id', LocationController.showUser)
-  router.get('/create', LocationController.showCreateForm)
-  router.post('/create', ensureAuthenticated, sanitize, geo.geoMiddleware, LocationController.postCreateForm)
-  router.get('/signin', LocationController.showSignIn)
+  router.get('/register', FarmController.showRegister)
+  router.get('/search', geo.geoMiddleware, FarmController.search)
+  router.get('/farm/:farm_id', FarmController.getFarm)
+  router.get('/profile/:farm_id', FarmController.showUser)
+  router.get('/create', FarmController.showCreateForm)
+  router.post('/create', ensureAuthenticated, sanitize, geo.geoMiddleware, FarmController.postCreateForm)
+  router.get('/signin', FarmController.showSignIn)
 
-//  router.post('/api/v1/location', middleware.authRequired, sanitize, geo.geoMiddleware, LocationController.create)
-  router.get('/api/v1/location/recent', LocationController.getRecent)
-  router.get('/api/v1/location/search', geo.geoMiddleware, LocationController.search)
-  router.get('/api/v1/location/:user_id', LocationController.get)
-  router.delete('/api/v1/location/:user_id', middleware.auth, LocationController.destroy)
-  router.get('/api/v1/farm/:farm_id', LocationController.getFarm)
+//  router.post('/api/v1/location', middleware.authRequired, sanitize, geo.geoMiddleware, FarmController.create)
+  router.get('/api/v1/location/recent', FarmController.getRecent)
+  router.get('/api/v1/location/search', geo.geoMiddleware, FarmController.search)
+  router.get('/api/v1/location/:user_id', FarmController.get)
+  router.delete('/api/v1/location/:user_id', middleware.auth, FarmController.destroy)
+  router.get('/api/v1/farm/:farm_id', FarmController.getFarm)
   router.get('/api/v1/geocode', middleware.auth, (req, res, next) => {
     const query = req.query
     const addressString = query.search_text

@@ -117,14 +117,15 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
-DROP TABLE locations;
+DROP TABLE IF EXISTS farms;
 
 --
--- Name: locations; Type: TABLE; Schema: public; Owner: -
+-- Name: farms; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE locations (
-    user_id text primary key,
+CREATE TABLE farms (
+    farm_id serial primary key,
+    user_id text NOT NULL,
     name text NOT NULL,
     address text NOT NULL,
     is_public boolean NOT NULL,
@@ -146,10 +147,10 @@ CREATE TABLE locations (
 
 
 --
--- Name: locations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: farms_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE locations_id_seq
+CREATE SEQUENCE farms_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -158,25 +159,22 @@ CREATE SEQUENCE locations_id_seq
 
 
 --
--- Name: locations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: farms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE locations_id_seq OWNED BY locations.id;
+ALTER SEQUENCE farms_id_seq OWNED BY farms.farm_id;
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY locations ALTER COLUMN id SET DEFAULT nextval('locations_id_seq'::regclass);
-
-ALTER TABLE ONLY locations
-    ADD CONSTRAINT locations_pkey PRIMARY KEY (user_id);
+ALTER TABLE ONLY farms ALTER COLUMN farm_id SET DEFAULT nextval('farms_id_seq'::regclass);
 
 --
--- Name: idx_locations_geom; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_farms_geom; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_locations_geom ON locations USING gist (geom);
+CREATE INDEX idx_farms_geom ON farms USING gist (geom);
 
 
 --

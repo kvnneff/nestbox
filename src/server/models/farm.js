@@ -1,7 +1,7 @@
 const Joi = require('joi')
-const defaultDB = require('../db/locations')
+const defaultDB = require('../db/farms')
 
-const LocationSchema = Joi.object().keys({
+const FarmSchema = Joi.object().keys({
   user_id: Joi.string().required(),
   name: Joi.string().required(),
   email: Joi.string().required(),
@@ -53,8 +53,8 @@ const defaultState = {
   farm_id: null
 }
 
-const LocationModel = (db = defaultDB) => {
-  const Location = (data) => {
+const FarmModel = (db = defaultDB) => {
+  const Farm = (data) => {
     const attributes = Object.assign({}, defaultState, data)
 
     const save = (cb) => {
@@ -69,7 +69,7 @@ const LocationModel = (db = defaultDB) => {
     }
 
     const validate = (cb) => {
-      Joi.validate(toJSON(), LocationSchema, function (err, user) {
+      Joi.validate(toJSON(), FarmSchema, function (err, user) {
         if (err) return cb(err)
         return cb(null, user)
       })
@@ -148,46 +148,46 @@ const LocationModel = (db = defaultDB) => {
     }
   }
 
-  Location.db = db
+  Farm.db = db
 
-  Location.find = (user_id, cb) => {
+  Farm.find = (user_id, cb) => {
     db.find(user_id, (err, result) => {
       if (err) return cb(err)
-      if (result) return cb(null, Location(result))
+      if (result) return cb(null, Farm(result))
       return cb(null)
     })
   }
 
-  Location.findFarm = (farm_id, cb) => {
+  Farm.findFarm = (farm_id, cb) => {
     db.findFarm(farm_id, (err, result) => {
       if (err) return cb(err)
-      if (result) return cb(null, Location(result))
+      if (result) return cb(null, Farm(result))
       return cb(null)
     })
   }
 
-  Location.findRecent = (cb) => {
+  Farm.findRecent = (cb) => {
     db.findRecent((err, collection) => {
       if (err) return cb(err)
       return cb(null, collection)
     })
   }
 
-  Location.findAll = (cb) => {
+  Farm.findAll = (cb) => {
     db.findAll((err, result) => {
       if (err) return cb(err)
       return cb(null, result)
     })
   }
 
-  Location.findWithinRadius = (latitude, longitude, radius, cb) => {
+  Farm.findWithinRadius = (latitude, longitude, radius, cb) => {
     db.findWithinRadius(latitude, longitude, radius, (err, results) => {
       if (err) return cb(err)
       const locations = []
 
       if (results.length) {
         results.forEach(function (result) {
-          const geoJSON = Location(result).toGeoJSON()
+          const geoJSON = Farm(result).toGeoJSON()
           const markerColor = geoJSON.properties.available ? '#56b881' : '#ff0033'
           geoJSON.properties['marker-color'] = markerColor
           geoJSON.properties.title = geoJSON.properties.name
@@ -198,14 +198,14 @@ const LocationModel = (db = defaultDB) => {
     })
   }
 
-  Location.findByName = (name, cb) => {
+  Farm.findByName = (name, cb) => {
     db.findByName(name, (err, results) => {
       if (err) return cb(err)
 
       const locations = []
 
       results.forEach((result) => {
-        const geoJSON = Location(result).toGeoJSON()
+        const geoJSON = Farm(result).toGeoJSON()
         const markerColor = geoJSON.properties.available ? '#56b881' : '#ff0033'
         geoJSON.properties['marker-color'] = markerColor
         geoJSON.properties.title = geoJSON.properties.name
@@ -216,7 +216,7 @@ const LocationModel = (db = defaultDB) => {
     })
   }
 
-  return Location
+  return Farm
 }
 
-module.exports = LocationModel
+module.exports = FarmModel

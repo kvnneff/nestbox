@@ -1,4 +1,4 @@
-INSERT INTO locations (
+INSERT INTO farms (
   user_id,
   name,
   email,

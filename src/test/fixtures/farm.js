@@ -1,4 +1,4 @@
-const locationFixture = () => {
+const farmFixture = () => {
   return {
     user_id: 'foo',
     name: 'Mezzaluna Farms',
@@ -19,4 +19,4 @@ const locationFixture = () => {
   }
 }
 
-module.exports = locationFixture
+module.exports = farmFixture

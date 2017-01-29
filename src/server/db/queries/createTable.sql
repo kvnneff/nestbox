@@ -1,10 +1,10 @@
-DROP TABLE locations;
+DROP TABLE IF EXISTS farms;
 
 --
--- Name: locations; Type: TABLE; Schema: public; Owner: -
+-- Name: farms; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE locations (
+CREATE TABLE farms (
     farm_id serial primary key,
     user_id text NOT NULL UNIQUE,
     name text NOT NULL,
@@ -28,5 +28,5 @@ CREATE TABLE locations (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX tsv_idx ON locations USING gin((setweight(to_tsvector('english', name), 'A') ||
+CREATE INDEX tsv_idx ON farms USING gin((setweight(to_tsvector('english', name), 'A') ||
   setweight(to_tsvector('english', description), 'B')));

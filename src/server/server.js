@@ -9,29 +9,50 @@ const Emitter = require('component-emitter')
 const massive = require('massive')
 const postcss = require('postcss-middleware')
 const cssnext = require('postcss-cssnext')
+const cssImport = require('postcss-import')
 const serveStatic = require('serve-static')
 const passport = require('passport')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-const LocationDB = require('./db/locations')
+const FarmDB = require('./db/farms')
 
 const db = massive.connectSync({
   connectionString: process.env.DATABASE_URL,
   scripts: './src/server/db/queries'
 })
 
-LocationDB.init(db)
+FarmDB.init(db)
 
 const middleware = require('./middleware')
 const routes = require('./routes')
 
-const development = process.env.NODE_ENV === 'development'
+let development
+if (process.env.NODE_ENV) {
+  development = process.env.NODE_ENV === 'development'
+} else {
+  development = true
+}
+
 const port = process.env.PORT || 8080
 
 const app = Express()
 const server = http.Server(app)
 server.emitter = new Emitter()
 server.db = db
+
+// Setup Postgres tables if they don't exist
+db.checkSetup((err, result) => {
+  if (err) throw err
+  if (result[0].exists) return
+
+  // If in production crash server rather than mess with tables
+  if (!development) throw new Error('Tables do not exist, check configuration!')
+
+  db.setup((err) => {
+    if (err) throw err
+    return
+  })
+})
 
 app.set('views', './src/server/views')
 app.set('view engine', 'pug')
@@ -53,6 +74,7 @@ app.use('/css', postcss({
     return 'src/public/css/styles.css'
   },
   plugins: [
+    cssImport,
     cssnext
   ]
 }))
@@ -76,7 +98,7 @@ const servejs = (src) => {
       'yo-yoify',
       'babelify'
     ],
-    cache: false
+    cache: development
   })
 }
 
@@ -90,7 +112,7 @@ app.use(routes(middleware))
 app.use('/img', serveStatic(__dirname + '/../public/img'))
 
 if (development) {
-  app.use(Express.logger('dev'))
+//  app.use(Express.logger('dev'))
   app.use(errorhandler())
 } else {
   app.use(middleware.error)

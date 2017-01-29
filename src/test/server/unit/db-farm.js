@@ -1,11 +1,11 @@
 const Test = require('tape')
-const db = require('../../../server/db/locations')
-const locationFixture = require('../../fixtures/location')
+const db = require('../../../server/db/farms')
+const farmFixture = require('../../fixtures/farm')
 
 const testRunner = (server, done) => {
   db.init(server.db)
 
-  Test('Location DB Queries', (t) => {
+  Test('Farm DB Queries', (t) => {
     server.db.createTable((err) => {
       if (err) throw err
       runTests(t, server, done)
@@ -17,10 +17,10 @@ const runTests = (t, server, done) => {
   const test = t.test
   t.plan(4)
 
-  test('db.save(locations, cb) inserts a new location into the db', (t) => {
+  test('db.save(farm, cb) inserts a new location into the db', (t) => {
     t.plan(4)
 
-    db.save(locationFixture(), (err, result) => {
+    db.save(farmFixture(), (err, result) => {
       t.equal(err, null)
       db.find(result.user_id, (err, result) => {
         t.equal(err, null)
@@ -35,7 +35,7 @@ const runTests = (t, server, done) => {
   test('db.find(id, cb) finds a location by its user_id', (t) => {
     t.plan(3)
 
-    db.save(locationFixture(), (err, result) => {
+    db.save(farmFixture(), (err, result) => {
       t.equal(err, null)
       db.find(result.user_id, (err, result) => {
         server.db.reset(() => {
@@ -49,7 +49,7 @@ const runTests = (t, server, done) => {
   test('db.remove(id, cb) remove a location by its id', (t) => {
     t.plan(5)
 
-    db.save(locationFixture(), (err, result) => {
+    db.save(farmFixture(), (err, result) => {
       t.equal(err, null)
       db.remove(result.user_id, (err, result) => {
         t.equal(err, null)
@@ -64,10 +64,10 @@ const runTests = (t, server, done) => {
     })
   })
 
-  test('db.findWithinRadius(latitude, longitude, radius, cb) locates locations within `radius`', (t) => {
+  test('db.findWithinRadius(latitude, longitude, radius, cb) locates farms within `radius`', (t) => {
     t.plan(3)
 
-    db.save(locationFixture(), (err) => {
+    db.save(farmFixture(), (err) => {
       t.equal(err, null)
       db.findWithinRadius(42.348636, -123.3425439, 6, (err, result) => {
         server.db.reset(() => {

@@ -1,6 +1,6 @@
 const Test = require('tape')
-const LocationModel = require('../../../server/models/location')
-const locationFixture = require('../../fixtures/location')
+const FarmModel = require('../../../server/models/farm')
+const FarmFixture = require('../../fixtures/farm')
 const Emitter = require('component-emitter')
 
 const dbSpy = () => {
@@ -36,28 +36,28 @@ const dbSpy = () => {
 }
 
 module.exports = (server, done) => {
-  Test('LocationModel', (t) => {
+  Test('FarmModel', (t) => {
     const test = t.test
     t.plan(6)
 
-    test('LocationModel(db, geo) returns a model creation function', (t) => {
+    test('FarmModel(db, geo) returns a model creation function', (t) => {
       t.plan(1)
-      const Location = LocationModel({ placeHolder: 'foo' })
+      const Location = FarmModel({ placeHolder: 'foo' })
       t.equal(Location.db.placeHolder, 'foo')
     })
 
     test('Location(attributes) returns a new model', (t) => {
       t.plan(1)
-      const Location = LocationModel()
-      const location = Location(locationFixture())
+      const Location = FarmModel()
+      const location = Location(FarmFixture())
       t.equal(location.attributes.zipcode, 97544)
     })
 
     test('Location#save(cb) calls Location.db.save method', (t) => {
       t.plan(2)
       const spy = dbSpy()
-      const locationData = locationFixture()
-      const Location = LocationModel(spy)
+      const locationData = FarmFixture()
+      const Location = FarmModel(spy)
       const location = Location(locationData)
 
       spy.emitter.on('save', (data) => {
@@ -72,8 +72,8 @@ module.exports = (server, done) => {
     test('Location#remove(cb) calls Location.db.remove method', (t) => {
       t.plan(2)
       const spy = dbSpy()
-      const locationData = locationFixture()
-      const Location = LocationModel(spy)
+      const locationData = FarmFixture()
+      const Location = FarmModel(spy)
       const location = Location(locationData)
 
       spy.emitter.on('remove', (user_id) => {
@@ -88,7 +88,7 @@ module.exports = (server, done) => {
     test('Location.find(cb) calls Location.db.find method', (t) => {
       t.plan(2)
       const spy = dbSpy()
-      const Location = LocationModel(spy)
+      const Location = FarmModel(spy)
 
       spy.emitter.on('find', (user_id) => {
         t.equal(user_id, 'foo')
@@ -102,7 +102,7 @@ module.exports = (server, done) => {
     test('Location.findWithinRadius(lat, lng, radius, cb) calls Location.db.findWithinRadius method', (t) => {
       t.plan(4)
       const spy = dbSpy()
-      const Location = LocationModel(spy)
+      const Location = FarmModel(spy)
       const latitude = 1
       const longitude = 2
       const radius = 3
@@ -118,5 +118,5 @@ module.exports = (server, done) => {
       })
     })
   })
-  done()
+  return done()
 }

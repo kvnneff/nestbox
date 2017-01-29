@@ -1,3 +1,6 @@
+@import "tachyons";
+@import "./mapbox.css";
+
 html {
   background-color: #fff;
   color: #333;
