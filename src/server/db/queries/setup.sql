@@ -13,6 +13,10 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
+DROP SCHEMA IF EXISTS public CASCADE;
+DROP SCHEMA IF EXISTS tiger CASCADE;
+DROP SCHEMA IF EXISTS topology CASCADE;
+
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
@@ -125,9 +129,10 @@ DROP TABLE IF EXISTS farms;
 
 CREATE TABLE farms (
     farm_id serial primary key,
-    user_id text NOT NULL,
+    user_id text NOT NULL UNIQUE,
     name text NOT NULL,
-    address text NOT NULL,
+    email text NOT NULL,
+    street text NOT NULL,
     is_public boolean NOT NULL,
     zipcode text NOT NULL,
     state text NOT NULL,
@@ -142,10 +147,12 @@ CREATE TABLE farms (
     free_range boolean NOT NULL,
     organic boolean NOT NULL,
     drive_up boolean NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP WITH TIME ZONE NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-
+CREATE INDEX tsv_idx ON farms USING gin((setweight(to_tsvector('english', name), 'A') ||
+  setweight(to_tsvector('english', description), 'B')));
 --
 -- Name: farms_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
@@ -185,6 +192,14 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON SCHEMA public FROM postgres;
 GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
+
+CREATE TABLE "session" (
+  "sid" varchar NOT NULL COLLATE "default",
+  "sess" json NOT NULL,
+  "expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
 --

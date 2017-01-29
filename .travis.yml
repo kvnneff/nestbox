@@ -10,7 +10,7 @@ cache:
   directories:
   - node_modules
 before_script:
-  - psql -U postgres -f sql/setup.sql
+  - npm initdb
 after_success:
 - eval "$(ssh-agent -s)"
 - chmod 600 .travis/deploy

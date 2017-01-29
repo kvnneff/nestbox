@@ -6,7 +6,7 @@ const testRunner = (server, done) => {
   db.init(server.db)
 
   Test('Farm DB Queries', (t) => {
-    server.db.createTable((err) => {
+    server.db.setup((err) => {
       if (err) throw err
       runTests(t, server, done)
     })
@@ -46,7 +46,7 @@ const runTests = (t, server, done) => {
     })
   })
 
-  test('db.remove(id, cb) remove a location by its id', (t) => {
+  test('db.remove(id, cb) removes a location by its id', (t) => {
     t.plan(5)
 
     db.save(farmFixture(), (err, result) => {

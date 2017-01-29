@@ -7,7 +7,7 @@
     "node": "5.4.0"
   },
   "scripts": {
-    "test": "npm run test-server",
+    "test": "NODE_ENV=test npm run test-server",
     "test-electron": "browserify src/test/client/**/*.js -t yo-yoify -t sheetify/transform -t babelify | tape-run",
     "test-server": "tape src/test/server/index.js",
     "test-client": "zuul -- ./src/test/client/**/*.js",
