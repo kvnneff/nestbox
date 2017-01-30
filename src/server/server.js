@@ -17,17 +17,23 @@ const session = require('express-session')
 const FarmDB = require('./db/farms')
 const testEnvironment = process.env.NODE_ENV === 'test'
 const productionEnvironment = process.env.NODE_ENV === 'production'
+let dbURL = process.env.DATABASE_URL
 const dbUser = process.env.DATABASE_USER
 const dbPassword = process.env.DATABASE_PASSWORD
 const dbHost = process.env.DATABASE_HOST
 const dbPort = process.env.DATABASE_PORT || 5432
 let dbName = process.env.DATABASE_NAME
 
-
 if (testEnvironment) dbName = 'nestbox_test'
 
+if (!dbURL) {
+  if (testEnvironment) dbName = 'nestbox_test'
+  dbURL = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`
+}
+
+
 const db = massive.connectSync({
-  connectionString: `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`,
+  connectionString: dbURL,
   scripts: './src/server/db/queries'
 })
 
