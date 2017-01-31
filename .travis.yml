@@ -16,9 +16,12 @@ after_success:
 - echo -e "Host kvnneff.me\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - git remote add dokku dokku@kvnneff.me:nestbox.kvnneff.me
 - git push dokku master
+before_script:
+  - psql -c 'create database nestbox_test;' -U postgres
 env:
   global:
   - NODE_ENV=test
+  - DATABASE_URL="postgres://postgres@localhost:5432/nestbox_test"
 before_install:
 - sudo apt-get install -y $(apt-cache search postgis | awk '/^postgresql-9\.[2-6]-postgis-2.3/{printf " "$1}' )
 - openssl aes-256-cbc -K $encrypted_f4dd25c14a44_key -iv $encrypted_f4dd25c14a44_iv
