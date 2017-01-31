@@ -11,10 +11,7 @@ cache:
   directories:
   - node_modules
 after_success:
-- eval "$(ssh-agent -s)"
-- chmod 600 .travis/deploy
-- ssh-add .travis/deploy
-- echo -e "Host nestbox.kvnneff.me\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- echo -e "Host kvnneff.me\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - git remote add dokku dokku@kvnneff.me:nestbox.kvnneff.me
 - git push dokku master
 env:
